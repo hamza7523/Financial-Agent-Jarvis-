@@ -1,77 +1,76 @@
-from config import GEMINI_API_KEY,MODEL_NAME
-from tools import TOOLS, get_current_datetime,remember,recall,list_memories
-import httpx
-user_message = "Tell me what time is right now."
+import google.generativeai as genai
+from dotenv import load_dotenv
 
-import httpx
+load_env()
+genai.configure()
+from tools import TOOLS
+
+# ==========================================
+# 1. STARTUP - Eager Initialization
+# ==========================================
+print("Booting up Finance Operations Agent...")
+
+# Initialize the embedding model
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
+# Extract descriptions and embed them once at startup
+descriptions = [tool["description"] for tool in TOOLS]
+print(f"Embedding {len(descriptions)} tool descriptions into memory...")
+
+# Store as a tensor of vectors
+tool_embeddings = model.encode(descriptions, convert_to_tensor=True)
+
+print("Startup complete. Agent is ready for queries.\n")
+print("-" * 50)
 
 
-def dispatch_tool(tool_name, tool_args):
-    if tool_name == "get_current_datetime":
-        return get_current_datetime()
-    elif tool_name == "remember":
-        return remember(**tool_args)   # equivalent to remember(key="name", value="Hamza")
-
-    elif tool_name == "recall":
-        return recall(**tool_args)  
-    elif tool_name=="list_memories":
-        return list_memories()
-
-    else:
-        return f"Unknown tool: {tool_name}"
+# ==========================================
+# 2. RUNTIME - Query Loop
+# ==========================================
+def process_query(user_query: str):
+    """Handles a single user query end-to-end."""
+    print(f"\nUser Query: '{user_query}'")
     
-def run_agent(user_message):
-    system_prompt = """You are Jarvis, a personal AI assistant.
-
-        You have access to the following tools and MUST use them:
-        - get_current_datetime: call this whenever the user asks about time or date
-        - remember: call this whenever the user shares personal information, goals, or preferences
-        - list_memories: ALWAYS call this first when asked what you know about the user
-        - recall: call this for EACH key returned by list_memories, then summarize everything
-
-        You have persistent memory. Always check your memory before saying you don't know something about the user.
-        Never say you have no memory of past interactions — use your tools to check first."""
-    result = {}
-    history = [
-    {"role": "user", "parts": [{"text": user_message}]},
-    ]   
-    URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL_NAME}:generateContent?key={GEMINI_API_KEY}"
-
+    # Step 1: Embed the user's query
+    query_embedding = model.encode(user_query, convert_to_tensor=True)
     
-    for i in range(10):
-        request = {
-            "system_instruction": {
-                "parts": [{"text": system_prompt}]
-            },
-            "contents": history,
-            "tools": [{"function_declarations": TOOLS}]
-        }
-        response = httpx.post(URL,json=request)
-        data= response.json()
-        part = data["candidates"][0]["content"]["parts"][0]
-        if("functionCall" in part):
-            tool_name = part["functionCall"]["name"]
-            tool_args = part["functionCall"]["args"]
-            result = dispatch_tool(tool_name, tool_args)
-            history.append({
-            "role": "model",
-            "parts": [{"functionCall": {"name": tool_name, "args": tool_args}}]
-            })
-            history.append({
-                "role": "user",
-                "parts": [{"functionResponse": {
-                    "name": tool_name,
-                    "response": {"result": result}
-                }}]
-            })
-        else:
-            print("loop  exited before 10")
-            print(part["text"])  # print what Gemini actually said
+    # Step 2: Calculate cosine similarity against all stored tool embeddings
+    similarities = util.cos_sim(query_embedding, tool_embeddings)[0]
+    
+    # Step 3: Select the most relevant tool
+    best_match_idx = torch.argmax(similarities).item()
+    best_score = similarities[best_match_idx].item()
+    selected_tool = TOOLS[best_match_idx]
+    
+    print(f"Matched Tool: {selected_tool['name']} (Confidence Score: {best_score:.4f})")
+    
+    # Optional guardrail: If the score is too low, the query might be unrelated to finance
+    if best_score < 0.30:
+        return {"error": "Query does not match any available finance tools."}
 
-            break
-        print(result)
-
+    # Step 4: After Match - Call the tool
+    print(f"Executing {selected_tool['name']}...")
+    try:
+        # Since our Phase 1 tools don't require dynamic parameters, we just call them directly
+        tool_function = selected_tool["fn"]
+        result = tool_function()
         
+        # Step 5: Keep its output and return it
+        return result
+        
+    except Exception as e:
+        return {"error": f"Failed to execute tool {selected_tool['name']}: {str(e)}"}
+
+# ==========================================
+# TEST THE LOOP
+# ==========================================
 if __name__ == "__main__":
-   run_agent("What do you know about me?")
+    # Test 1: Should trigger get_aging_report
+    res1 = process_query("Who owes us money right now? I need to chase down late payments.")
+    print("\nResult:", res1)
     
+    print("-" * 50)
+    
+    # Test 2: Should trigger get_expense_anomalies
+    res2 = process_query("Did anyone double bill us this month? Check for weird spending.")
+    print("\nResult:", res2)
