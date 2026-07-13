@@ -2,6 +2,8 @@
 from datetime import datetime, date
 import json
 from data_layer import load_invoices, load_expenses, load_payments
+from config import CONFIDENCE_THRESHOLD, HIGH_EXPENSE_THRESHOLD, STARTING_BALANCE
+
 
 def get_aging_report():
     invoices = load_invoices()
@@ -128,6 +130,8 @@ def get_cashflow_position():
     }
 
 TOOLS = [
+   
+    
     {
         "name": "get_monthly_summary",
         "description": "How are we doing this month? Give me the high-level monthly numbers. What's our actual revenue from paid invoices, how much have we spent in expenses, and what payments have cleared? Summarize our current monthly financial health.",
@@ -179,3 +183,4 @@ TOOLS = [
         }
     }
 ]
+

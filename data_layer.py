@@ -1,7 +1,9 @@
-from datetime import date
-from dataclasses import dataclass
-
+from dataclasses import dataclass, field
+from datetime import datetime,date
+from typing import Literal, Optional, Callable
+from uuid import uuid4
 import openpyxl
+
 
 @dataclass
 class Expense:
@@ -11,8 +13,9 @@ class Expense:
     amount: float
     expense_date: date
     vendor: str
-    
-    
+
+
+
 @dataclass
 class Invoice:
     invoice_id: str
@@ -42,12 +45,15 @@ def load_invoices():
         if not row[0]:
             continue
         invoice_id, client_name, amount, issue_date, due_date, status, days_overdue = row
-        invoice = Invoice(invoice_id=invoice_id, client_name=client_name, amount=amount, issue_date=issue_date, due_date=due_date, status=status, days_overdue=days_overdue)
+        invoice = Invoice(invoice_id=invoice_id, client_name=client_name, amount=amount, issue_date=_to_date(issue_date), due_date=_to_date(due_date), status=status, days_overdue=days_overdue)
         invoices.append(invoice)
     wb.close()
     
     return invoices
-
+def _to_date(value):
+    if isinstance(value, datetime):
+        return value.date()
+    return value
 def load_expenses():
     wb = openpyxl.load_workbook("accounts.xlsx", data_only=True)
     ws = wb["Expenses"]
