@@ -10,9 +10,18 @@ from memory import (
     ConversationBuffer, ConversationTurn, ToolCall,
     Episode, write_episode, recall_episodes
 )
-
+import google.generativeai as genai
 load_dotenv()
 
+# Initialize Gemini once when the module loads
+gemini_model = None
+
+if GEMINI_API_KEY:
+    try:
+        genai.configure(api_key=GEMINI_API_KEY)
+        gemini_model = genai.GenerativeModel(MODEL_NAME)
+    except Exception as exc:
+        print(f"[WARN] Could not initialize Gemini model: {exc}")
 
 def call_gemini(prompt: str) -> str:
     """Call the Gemini REST API directly without the deprecated SDK."""
@@ -94,6 +103,36 @@ Respond as Jarvis."""
             f"Tool '{tool_name}' returned {json.dumps(tool_result, default=str)}. "
             f"Details: {exc}"
         )
+
+
+def extract_parameters(user_query: str, tool: dict) -> dict:
+    """Use Gemini to extract tool parameters from the user query."""
+    required = tool.get("parameters", {}).get("required", [])
+    if not required:
+        return {}
+
+    properties = tool["parameters"]["properties"]
+    param_descriptions = "\n".join(
+        f'- {k}: {v["description"]}' for k, v in properties.items()
+    )
+
+    prompt = f"""Extract the following parameters from the user query.
+Return ONLY a valid JSON object with the parameter values. No explanation, no markdown.
+
+Parameters needed:
+{param_descriptions}
+
+User query: {user_query}
+
+JSON:"""
+
+    response = gemini_model.generate_content(prompt)
+    raw = response.text.strip().strip("```json").strip("```").strip()
+
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        return {}
 # ==========================================
 # 1. STARTUP - Eager Initialization
 # ==========================================
@@ -153,8 +192,11 @@ def process_query(user_query: str):
     # Step 4: Execute the tool
     print(f"Executing {selected_tool['name']}...")
     try:
+        # Extract parameters if tool needs them
+        params = extract_parameters(user_query, selected_tool)
+
         tool_function = selected_tool["fn"]
-        result = tool_function()
+        result = tool_function(**params) if params else tool_function()
 
         # Auto-write episode — Jarvis logs what it just observed
         episode = Episode(
@@ -200,12 +242,17 @@ def process_query(user_query: str):
 # TEST THE LOOP
 # ==========================================
 if __name__ == "__main__":
-    # Test 1: Should trigger get_aging_report
     res1 = process_query("Who owes us money right now? I need to chase down late payments.")
     print("\nResult:", res1)
-    
     print("-" * 50)
-    
-    # Test 2: Should trigger get_expense_anomalies
+
     res2 = process_query("Did anyone double bill us this month? Check for weird spending.")
     print("\nResult:", res2)
+    print("-" * 50)
+
+    res3 = process_query("Show me everything on Delta Imports.")
+    print("\nResult:", res3)
+    print("-" * 50)
+
+    res4 = process_query("Are we doing better than last month?")
+    print("\nResult:", res4)

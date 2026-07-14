@@ -18,5 +18,85 @@
         "observation": "{'anomalies_found': 5, 'details': [{'type': 'High Value Anomaly', 'expense_id': 'EXP-001', 'amount': 45000}, {'type': 'High Value Anomaly', 'expense_id': 'EXP-007', 'amount': 45000}, {'type': 'Potential Duplicate', 'expense_id': 'EXP-007', 'amount': 45000}, {'type': 'High Value Anomaly', 'expense_id",
         "outcome": "",
         "importance": 6
+    },
+    {
+        "episode_id": "dd6361e6-0cf5-4cee-846d-c695191427a2",
+        "timestamp": "2026-07-14T06:05:34.742837",
+        "actor": "jarvis",
+        "entity": "get_aging_report",
+        "trigger": "get_aging_report",
+        "observation": "{'0-30': [Invoice(invoice_id='INV-006', client_name='Zeta Pharma', amount=2100, issue_date=datetime.date(2024, 11, 20), due_date=datetime.date(2024, 12, 20), status='Overdue', days_overdue=11), Invoice(invoice_id='INV-013', client_name='Mu Traders', amount=3150, issue_date=datetime.date(2024, 11, 15",
+        "outcome": "",
+        "importance": 6
+    },
+    {
+        "episode_id": "cb7c8ffe-650f-4eff-96d5-e5bee65f384b",
+        "timestamp": "2026-07-14T06:05:40.407159",
+        "actor": "jarvis",
+        "entity": "get_expense_anomalies",
+        "trigger": "get_expense_anomalies",
+        "observation": "{'anomalies_found': 5, 'details': [{'type': 'High Value Anomaly', 'expense_id': 'EXP-001', 'amount': 45000}, {'type': 'High Value Anomaly', 'expense_id': 'EXP-007', 'amount': 45000}, {'type': 'Potential Duplicate', 'expense_id': 'EXP-007', 'amount': 45000}, {'type': 'High Value Anomaly', 'expense_id",
+        "outcome": "",
+        "importance": 6
+    },
+    {
+        "episode_id": "0cebac22-b604-4d45-8b50-9aa4fc010f69",
+        "timestamp": "2026-07-14T06:10:15.559601",
+        "actor": "jarvis",
+        "entity": "get_aging_report",
+        "trigger": "get_aging_report",
+        "observation": "{'0-30': [Invoice(invoice_id='INV-006', client_name='Zeta Pharma', amount=2100, issue_date=datetime.date(2024, 11, 20), due_date=datetime.date(2024, 12, 20), status='Overdue', days_overdue=11), Invoice(invoice_id='INV-013', client_name='Mu Traders', amount=3150, issue_date=datetime.date(2024, 11, 15",
+        "outcome": "",
+        "importance": 6
+    },
+    {
+        "episode_id": "a4bde8e5-cb6e-4b46-b642-a98ee557dccb",
+        "timestamp": "2026-07-14T06:10:24.391658",
+        "actor": "jarvis",
+        "entity": "get_expense_anomalies",
+        "trigger": "get_expense_anomalies",
+        "observation": "{'anomalies_found': 5, 'details': [{'type': 'High Value Anomaly', 'expense_id': 'EXP-001', 'amount': 45000}, {'type': 'High Value Anomaly', 'expense_id': 'EXP-007', 'amount': 45000}, {'type': 'Potential Duplicate', 'expense_id': 'EXP-007', 'amount': 45000}, {'type': 'High Value Anomaly', 'expense_id",
+        "outcome": "",
+        "importance": 6
+    },
+    {
+        "episode_id": "a2627405-afb4-4bc3-bdcd-d9ca19315e60",
+        "timestamp": "2026-07-14T06:25:55.098146",
+        "actor": "jarvis",
+        "entity": "get_aging_report",
+        "trigger": "get_aging_report",
+        "observation": "{'0-30': [Invoice(invoice_id='INV-006', client_name='Zeta Pharma', amount=2100, issue_date=datetime.date(2024, 11, 20), due_date=datetime.date(2024, 12, 20), status='Overdue', days_overdue=11), Invoice(invoice_id='INV-013', client_name='Mu Traders', amount=3150, issue_date=datetime.date(2024, 11, 15",
+        "outcome": "",
+        "importance": 6
+    },
+    {
+        "episode_id": "e0a32fcc-a9f5-4f8b-939d-347ef744d4ec",
+        "timestamp": "2026-07-14T06:26:01.168699",
+        "actor": "jarvis",
+        "entity": "get_expense_anomalies",
+        "trigger": "get_expense_anomalies",
+        "observation": "{'anomalies_found': 5, 'details': [{'type': 'High Value Anomaly', 'expense_id': 'EXP-001', 'amount': 45000}, {'type': 'High Value Anomaly', 'expense_id': 'EXP-007', 'amount': 45000}, {'type': 'Potential Duplicate', 'expense_id': 'EXP-007', 'amount': 45000}, {'type': 'High Value Anomaly', 'expense_id",
+        "outcome": "",
+        "importance": 6
+    },
+    {
+        "episode_id": "b4c37296-e958-43a6-9af6-27398f365e52",
+        "timestamp": "2026-07-14T06:26:08.144461",
+        "actor": "jarvis",
+        "entity": "get_client_history",
+        "trigger": "get_client_history",
+        "observation": "{'client': 'Delta Imports', 'total_invoiced': 24800, 'total_paid': 12400, 'outstanding': 12400, 'overdue_invoices': 2, 'overdue_amounts': [{'invoice_id': 'INV-004', 'amount': 12400, 'days_overdue': 71}, {'invoice_id': 'INV-011', 'amount': 12400, 'days_overdue': 71}], 'invoice_count': 2, 'payment_cou",
+        "outcome": "",
+        "importance": 6
+    },
+    {
+        "episode_id": "b0241bbf-895d-4d6a-9176-d6d1a5fe6f58",
+        "timestamp": "2026-07-14T06:26:19.033881",
+        "actor": "jarvis",
+        "entity": "get_month_comparison",
+        "trigger": "get_month_comparison",
+        "observation": "{'current_month': 'July 2026', 'previous_month': '6/2026', 'invoices': {'current': 0, 'previous': 0, 'change_pct': None}, 'expenses': {'current': 0, 'previous': 0, 'change_pct': None}, 'payments': {'current': 0, 'previous': 0, 'change_pct': None}}",
+        "outcome": "",
+        "importance": 6
     }
 ]
