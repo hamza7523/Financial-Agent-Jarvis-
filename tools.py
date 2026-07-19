@@ -5,7 +5,9 @@ from data_layer import load_invoices, load_expenses, load_payments
 from config import CONFIDENCE_THRESHOLD, HIGH_EXPENSE_THRESHOLD, STARTING_BALANCE
 
 
+
 def get_aging_report():
+    """Who owes us money and who is really late on payments? Which clients should I chase down first? Give me the breakdown of overdue invoices categorized by 0-30, 30-60, and 60+ days past due so I know where our cash is stuck."""
     invoices = load_invoices()
     invoices = [inv for inv in invoices if inv.status == "Overdue"]
     
@@ -24,6 +26,7 @@ def get_aging_report():
     return {"0-30": bucket1, "30-60": bucket2, "60+": bucket3}
 
 def get_monthly_summary():
+    """How are we doing this month? Give me the high-level monthly numbers. What's our actual revenue from paid invoices, how much have we spent in expenses, and what payments have cleared? Summarize our current monthly financial health."""
     invoices = load_invoices()
     expenses = load_expenses()
     payments = load_payments()
@@ -40,6 +43,7 @@ def get_monthly_summary():
     }
 
 def get_reconciliation_report():
+    """Do our books actually match the bank statements? Are there any missing payments, mismatched invoice amounts, or reconciliation issues I need to worry about today? Show me the discrepancies between our records and the bank."""
     invoices = load_invoices()
     payments = load_payments()
     
@@ -73,6 +77,7 @@ def get_reconciliation_report():
 
 
 def get_client_history(client_name: str | None = None) -> dict:
+    """Pull up everything on a specific client. Show me the full history for Delta Imports — all their invoices, payments, and how much they still owe us. I need a complete picture of one client's account."""
     invoices = load_invoices()
     payments = load_payments()
     invoice_lookup = {inv.invoice_id: inv for inv in invoices}
@@ -150,6 +155,7 @@ def get_client_history(client_name: str | None = None) -> dict:
 
 
 def get_month_comparison() -> dict:
+    """Are we doing better or worse than last month? Compare this month versus last month across invoices, expenses, and payments. Show me the month-over-month trend and whether our financial position is improving."""
     invoices = load_invoices()
     expenses = load_expenses()
     payments = load_payments()
@@ -194,6 +200,7 @@ def get_month_comparison() -> dict:
         "payments": {"current": curr_payments, "previous": prev_payments, "change_pct": delta(curr_payments, prev_payments)}
     }
 def get_expense_anomalies():
+    """Did someone overspend or double-bill us? Find me any weird, unusually high, or duplicate expenses. Flag anything that looks out of the ordinary, anomalous, or sketchy in our recent spending."""
     expenses = load_expenses()
     anomalies = []
     seen_amounts = set()
@@ -227,6 +234,7 @@ def get_expense_anomalies():
     }
 
 def get_cashflow_position():
+    """Do we have enough cash to make payroll and cover our upcoming bills? What is our actual cash position right now? Show me our working capital, total cash on hand, and current runway."""
     invoices = load_invoices()
     expenses = load_expenses()
     
