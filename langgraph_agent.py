@@ -1,35 +1,26 @@
-
-
-# MUST be before any LangChain imports
 import os
 
-from transformers import dataclass
-
-os.environ["LANGCHAIN_API_KEY"] = "[REDACTED_LANGCHAIN_TOKEN]"
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_PROJECT"] = "Jarvis"
 
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv()  # This loads LANGCHAIN_API_KEY from .env automatically
 
-# rest of imports...
+# No need to assign LANGCHAIN_API_KEY to a Python variable
+# LangChain reads it directly from the environment
 
 from typing import Literal, TypedDict
 from langchain_core.messages import HumanMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.tools import tool
 from langgraph.prebuilt import ToolNode
-from langgraph.graph import StateGraph, MessagesState
+from langgraph.graph import StateGraph, MessagesState  # use this as-is
 from tools import TOOLS
 
+# DELETE the @dataclass MessagesState block entirely - it's already imported above
 
 
-
-@dataclass
-class MessagesState(StateGraph):
-    messages: list[HumanMessage]
     
-
 
 
 
