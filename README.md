@@ -67,14 +67,13 @@ Completed:
 - Episodic memory persistence
 - Persistent memory store for facts and preferences
 
-### Phase 3 — Planned Enhancements
+### Phase 3 — 
 
-Planned next steps:
 
-- Replace file-based episodic storage with ChromaDB or another vector database
-- Add semantic retrieval of past episodes such as recurring late clients
-- Introduce statistical anomaly detection and stronger pattern recognition
-- Add robust test coverage for all finance tools and agent flows
+- Replaced file-based episodic storage with ChromaDB or another vector database
+- Added semantic retrieval of past episodes such as recurring late clients
+- Introduced statistical anomaly detection and stronger pattern recognition
+- Added robust test coverage for all finance tools and agent flows
 
 ### Phase 4 — Action Layer
 
